@@ -1,0 +1,14 @@
+Operations:
+
+1. CREATE "{ID: 1, Name: "Object 1", Value: 10.0}"
+1. READ ID
+2. UPDATE "{ID: 1, Name: "Object 1", Value: 10.0}"
+3. DELETE ID
+
+
+Saved files:
+
+1. tablename.bin
+2. tablemane_index.bin
+    1. Serialise B tree
+    2. Save the serialised Byte to file
