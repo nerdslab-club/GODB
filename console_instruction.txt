@@ -1,10 +1,16 @@
 Operations:
 
-1. CREATE "{ID: 1, Name: "Object 1", Value: 10.0}"
-1. READ ID
-2. UPDATE "{ID: 1, Name: "Object 1", Value: 10.0}"
-3. DELETE ID
+1. CREATE "{ID: 1, Name: "Object 1", Value: 10.0}" <COLLECTION NAME>
+1. READ <DOCUMENT NAME> <COLLECTION NAME>
+2. UPDATE "{ID: 1, Name: "Object 1", Value: 10.0}" <COLLECTION NAME>
+3. DELETE <DOCUMENT NAME> <COLLECTION NAME>
 
+
+Create collection operation:
+
+    CREATETABLE USER<COLLECTION NAME> PRIMARY_KEY<DOCUMENT NAME>
+
+{"type": "number"}<JSON SCHEMA>
 
 Saved files:
 
@@ -12,3 +18,13 @@ Saved files:
 2. tablemane_index.bin
     1. Serialise B tree
     2. Save the serialised Byte to file
+
+    {"John", "23", "23344333", "Myrl Tech", Address{"bangalore", "karnataka", "india", "410013"}}
+
+
+
+///Example crating student table
+
+CREATETABLE <foldername> <filename>
+
+

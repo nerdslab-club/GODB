@@ -3,6 +3,6 @@
 - Con-current
 - Distributed
 - Redundancy
-- Failure Recovery
-- Transaction
-- Deadlock Avoidance
+- Failure Recovery tick
+- Transaction tick
+- Deadlock Avoidance 
