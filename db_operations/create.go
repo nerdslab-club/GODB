@@ -131,7 +131,7 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 
 		b = append(b, byte('\n'))
 
-		if err := ioutil.WriteFile(tmpPath, b, 0777); err != nil {
+		if err := ioutil.WriteFile(tmpPath, b, 0755); err != nil {
 			return err
 		}
 
@@ -229,7 +229,7 @@ func Create() string {
 
 	/*For random json structures*/
 	var data map[string]interface{}
-	//{"Name": "Prat","age": 30,"isEmployed": true,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
+
 	var pkValue string
 	validInput := false
 	for validInput == false {
@@ -263,11 +263,7 @@ func Create() string {
 		} else {
 			fmt.Println("Row with same primary key already exists. Please, give valid data!")
 		}
-
 	}
-
-	/*test json data*/
-	//{"Name": "Prattoy", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
 
 	if pkValue == "" || data == nil {
 		return "Error occurred!"
@@ -325,7 +321,7 @@ func WordCount(s string) int {
 // GetPrimaryKey get tables primary key
 func GetPrimaryKey(tableName string) string {
 	var pk string
-	fmt.Print(pk)
+	//fmt.Print(pk)
 	data, err := ioutil.ReadFile("database/table_pk.json")
 	if err != nil {
 		log.Fatal(err)
