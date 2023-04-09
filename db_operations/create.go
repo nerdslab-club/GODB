@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/jcelliott/lumber"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -82,7 +84,7 @@ func New(dir string, options *Options) (*Driver, error) {
 }
 
 func (d *Driver) Write(collection, resource string, v interface{}) error {
-	fmt.Print(v)
+
 	if collection == "" {
 		return fmt.Errorf("Missing collection - no place to save record!")
 	}
@@ -110,7 +112,6 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 			fmt.Println("Error:", err)
 			return err
 		}
-		fmt.Print(tableArr)
 
 		v = append(tableArr, v.([]TablePk)...)
 	}
@@ -120,8 +121,8 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 	mkdir := d.MakeDirectory(dir)
 	if mkdir == nil {
 
+		/*converts string to JSON*/
 		b, err := json.MarshalIndent(v, "", "\t")
-		//b, err := json.MarshalIndent(v, "", "\t")
 		if err != nil {
 			return err
 		}
@@ -168,55 +169,110 @@ func (d *Driver) getOrCreateMutex(collection string) *sync.Mutex {
 func Create() string {
 	dir := "database/"
 
+	fmt.Println("Write table name where you want to insert data or to see table list type 'table list'")
+	var tableName string
+	isTableName := false
+
+	for isTableName == false {
+
+		input := GetInput()
+
+		if WordCount(input) == 2 && (input == "table list" || input == "TABLE LIST") { //user wants to see table list
+			var count int
+			// Use filepath.Walk to traverse the directory tree
+			err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+				// Check if the current path is a directory
+				if info.IsDir() {
+					count++
+					// Skip the first directory
+					if count == 1 {
+						return nil
+					}
+					fmt.Print(count-1, ". ", info.Name(), "\n")
+				}
+				return nil
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println("Write table name where you want to insert data or to see table list type 'table list'")
+		} else if WordCount(input) == 1 { //table name entered by user
+			//checks if the table exists
+			// Use filepath.Walk to traverse the directory tree
+			err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+				// Check if the current path is a directory with the desired name
+				if info.IsDir() && info.Name() == input {
+					isTableName = true
+					tableName = input
+				}
+				return nil
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			if isTableName == false {
+				fmt.Print("Table not found. Please, enter a valid table name!\n")
+			}
+		} else {
+			fmt.Print("Invalid input. Please, enter correct command!\n")
+		}
+	}
+
 	/*Create new directory at root*/
 	db, err := New(dir, nil)
 	if err != nil {
 		fmt.Println("Error", err)
 	}
 
-	/*Taking input from user*/
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	input := scanner.Text()
-	//{"Name": "John", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
-	employee := User{}
+	/*for random json structures*/
+	var data map[string]interface{}
 
-	/*Converts string to JSON*/
-	if err := json.Unmarshal([]byte(input), &employee); err != nil {
-		fmt.Println("Error", err)
+	var pkValue string
+	validInput := false
+	for validInput == false {
+		fmt.Println("Please enter valid json file containing table's primary key to insert new row.")
+		/*Taking input from user*/
+		input := GetInput()
+		//{"Name": "John", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
+
+		/*Decode a JSON string to GO value*/
+		err = json.Unmarshal([]byte(input), &data)
+		if err != nil {
+			//return errors.New("invalid json body provided for the request")
+			fmt.Println("Error: Invalid json body provided for the request!")
+			return "Failed!"
+		}
+
+		/*Get chosen table's primary key*/
+		tablePk := GetPrimaryKey(tableName)
+
+		pkValue = checkPKValue(data, tablePk)
+
+		/*Checks if file exists with same name*/
+		filename := filepath.Join(dir, tableName, pkValue+".json")
+
+		if _, err := os.Stat(filename); os.IsNotExist(err) {
+			if pkValue == "" {
+				fmt.Println("Primary key is absent in json file!")
+			} else {
+				validInput = true
+			}
+		} else {
+			fmt.Println("Row with same primary key already exists. Please, give valid data!")
+		}
+
 	}
-	//fmt.Print(employee)
 
-	//var data map[string]interface{}
-	//err = json.Unmarshal([]byte(line), &data)
-	//if err != nil {
-	//	return errors.New("invalid json body provided for the request")
-	//}
-	//{"Name": "Albert", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
+	/*test json data*/
+	//{"Name": "Prattoy", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
 
-	employees := []User{
-		//{"John", "23", "23344333", "Myrl Tech", Address{"bangalore", "karnataka", "india", "410013"}},
-		//{"Paul", "25", "23344333", "Google", Address{"san francisco", "california", "USA", "410013"}},
-		//{"Robert", "27", "23344333", "Microsoft", Address{"bangalore", "karnataka", "india", "410013"}},
-		//{"Vince", "29", "23344333", "Facebook", Address{"bangalore", "karnataka", "india", "410013"}},
-		//{"Neo", "31", "23344333", "Remote-Teams", Address{"bangalore", "karnataka", "india", "410013"}},
-		//{"Albert", "32", "23344333", "Dominate", Address{"bangalore", "karnataka", "india", "410013"}},
+	if pkValue == "" || data == nil {
+		return "Error occurred!"
 	}
 
-	employees = append(employees, employee)
-	//fmt.Print(employees)
-
-	/*Inserts all users in users directory*/
-	for _, value := range employees {
-		db.Write("users", value.Name, User{
-			Name:    value.Name,
-			Age:     value.Age,
-			Contact: value.Contact,
-			Company: value.Company,
-			Address: value.Address,
-		})
-	}
-	return "Created"
+	db.Write(tableName, pkValue, data)
+	return "Created!"
 }
 
 // CreateTablePk Creates table directory and updates table_pk file
@@ -238,19 +294,65 @@ func CreateTablePk(table string, pk string) string {
 		return "Failed!"
 	}
 
-	tableArray := []TablePk{
+	/*creates table_pk.json and updates*/
+	err = db.Write("/", "table_pk", []TablePk{
 		{
 			Name:       table,
 			PrimaryKey: pk,
 		},
-	}
-
-	/*creates table_pk.json and updates*/
-	err = db.Write("/", "table_pk", tableArray)
+	})
 	if err != nil {
 		fmt.Println("Error 123", err)
 		return "Failed!"
 	}
 
-	return "Success!"
+	return "Successfully table created!"
+}
+
+// GetInput gets input from user
+func GetInput() string {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	return scanner.Text()
+}
+
+// WordCount counts total words
+func WordCount(s string) int {
+	return len(strings.Fields(s))
+}
+
+func GetPrimaryKey(tableName string) string {
+	var pk string
+	fmt.Print(pk)
+	data, err := ioutil.ReadFile("database/table_pk.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Unmarshal the JSON data into a []map[string]interface{}
+	var objmaps []map[string]interface{}
+	err = json.Unmarshal(data, &objmaps)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Loop through each object in the array and check if the key "name" exists
+	for _, objmap := range objmaps {
+		if name, ok := objmap["Name"]; ok {
+			if name == tableName {
+				pk = objmap["PrimaryKey"].(string)
+			}
+		}
+	}
+
+	return pk
+}
+
+func checkPKValue(data map[string]interface{}, tablePk string) string {
+	// Check if the key "tablePk" exists in the map
+	if _, ok := data[tablePk]; ok {
+		return data[tablePk].(string)
+	}
+
+	return ""
 }

@@ -162,8 +162,9 @@ func main() {
 				fmt.Print("Write 'CREATE TABLE <TABLE_NAME> <PRIMARY_KEY>'\nFor example, to create a table called 'users' write 'CREATE TABLE USERS NAME'\n")
 				thirdInput := GetInputString()
 
-				//fmt.Print(db_operations.Create())
 				fmt.Print(db_operations.CreateTablePk(strings.Fields(thirdInput)[2], strings.Fields(thirdInput)[3]))
+			} else if secondInput == 2 {
+				fmt.Print(db_operations.Create())
 			}
 
 		} else if input == 2 {
