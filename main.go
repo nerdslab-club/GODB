@@ -94,7 +94,6 @@ func main() {
 						} else {
 							validInput = true
 						}
-
 					} else {
 						fmt.Print("Invalid input. Please, give valid input!\n")
 					}
@@ -106,22 +105,74 @@ func main() {
 				fmt.Print("Invalid input. Please, give valid input!\n")
 			}
 		} else if input == 4 { /*Delete*/
-			fmt.Print(input)
+			fmt.Print("1. Delete table row (Press 1)\n2. Delete one table (Press 2)\n3. Delete all table (Press 3)\nTo Exit Press 0\nChoose Any Operation To Continue...\n")
+
+			/*Takes input from user*/
+			secondInput := GetInputNumber()
+			if secondInput == 1 {
+				var thirdInput string
+				/*validates input from user*/
+				validInput := false
+				for validInput == false {
+					fmt.Print("Write 'DELETE <TABLE_NAME> <PRIMARY_KEY>'\nFor example, to delete row containing primary key 'MIDTERM' of table 'EXAM', write 'DELETE EXAM MIDTERM'\n")
+					thirdInput = GetInputString("delete")
+
+					if WordCount(thirdInput) == 3 {
+						validInput = true
+					} else {
+						fmt.Print("Invalid input. Please, give valid input!\n")
+					}
+				}
+
+				/*Delete one row*/
+				fmt.Print(db_operations.DeleteRow(strings.Fields(thirdInput)[1], strings.Fields(thirdInput)[2]))
+
+			} else if secondInput == 2 {
+				var thirdInput string
+				/*validates input from user*/
+				validInput := false
+				for validInput == false {
+					fmt.Print("Write 'DELETE <TABLE_NAME>'\nFor example, to delete table 'EXAM', write 'DELETE EXAM'\n")
+					thirdInput = GetInputString("delete")
+
+					if WordCount(thirdInput) == 2 {
+						validInput = true
+					} else {
+						fmt.Print("Invalid input. Please, give valid input!\n")
+					}
+				}
+
+				/*Delete one row*/
+				fmt.Print(db_operations.DeleteTable(strings.Fields(thirdInput)[1]))
+			} else if secondInput == 3 {
+				var thirdInput string
+				/*validates input from user*/
+				validInput := false
+				for validInput == false {
+					fmt.Print("Write 'DELETE *' to delete all table\nTo Exit Press 0\n")
+					thirdInput = GetInputString("delete")
+
+					if WordCount(thirdInput) == 2 && strings.Fields(thirdInput)[1] == "*" {
+						if IsSure() {
+							validInput = true
+						} else {
+							fmt.Print("Invalid input. Please, give valid input!\n")
+						}
+					} else {
+						fmt.Print("Invalid input. Please, give valid input!\n")
+					}
+				}
+
+				/*Deletes all table*/
+				fmt.Print(db_operations.DeleteAll())
+			} else {
+				fmt.Print("Invalid input. Please, give valid input!\n")
+			}
 		} else {
 			fmt.Print("Invalid input. Please, give valid input!\n")
 		}
 		fmt.Print("\n")
 	}
-
-	/*Delete user by name*/
-	//if err := db.Delete("users", "Albert"); err != nil {
-	//	fmt.Println("Error", err)
-	//}
-
-	/*To delete all users*/
-	//if err := db.Delete("users", ""); err != nil {
-	//	fmt.Println("Error", err)
-	//}
 }
 
 // GetInputNumber Takes number input from user
@@ -142,6 +193,11 @@ func GetInputNumber() int {
 		} else {
 			validInput = true
 		}
+
+		/*exists if 0 pressed*/
+		if number == 0 {
+			os.Exit(0)
+		}
 	}
 	return number
 }
@@ -156,9 +212,14 @@ func GetInputString(operation string) string {
 		scanner.Scan()
 		line = scanner.Text()
 
+		/*exists if 0 pressed*/
+		if line == "0" {
+			os.Exit(0)
+		}
+
 		/*Command validations*/
 		if operation == "create" {
-			if strings.HasPrefix(line, "create table") || strings.HasPrefix(line, "CREATE TABLE") {
+			if strings.HasPrefix(line, "create table ") || strings.HasPrefix(line, "CREATE TABLE ") {
 				if WordCount(line) != 4 {
 					fmt.Println("Invalid command. Please enter valid command!")
 				} else {
@@ -168,7 +229,7 @@ func GetInputString(operation string) string {
 				fmt.Println("Invalid command. Please enter valid command!")
 			}
 		} else if operation == "read" {
-			if strings.HasPrefix(line, "read") || strings.HasPrefix(line, "READ") {
+			if strings.HasPrefix(line, "read ") || strings.HasPrefix(line, "READ ") {
 				if WordCount(line) != 3 {
 					fmt.Println("Invalid command. Please enter valid command!")
 				} else {
@@ -178,8 +239,18 @@ func GetInputString(operation string) string {
 				fmt.Println("Invalid command. Please enter valid command!")
 			}
 		} else if operation == "update" {
-			if strings.HasPrefix(line, "update") || strings.HasPrefix(line, "UPDATE") {
+			if strings.HasPrefix(line, "update ") || strings.HasPrefix(line, "UPDATE ") {
 				if WordCount(line) >= 3 {
+					validInput = true
+				} else {
+					fmt.Println("Invalid command. Please enter valid command!")
+				}
+			} else {
+				fmt.Println("Invalid command. Please enter valid command!")
+			}
+		} else if operation == "delete" {
+			if strings.HasPrefix(line, "delete ") || strings.HasPrefix(line, "DELETE ") {
+				if WordCount(line) >= 2 {
 					validInput = true
 				} else {
 					fmt.Println("Invalid command. Please enter valid command!")
@@ -196,4 +267,19 @@ func GetInputString(operation string) string {
 // WordCount counts total words
 func WordCount(s string) int {
 	return len(strings.Fields(s))
+}
+
+func IsSure() bool {
+	fmt.Print("Are you sure? (Press Y/N)\nTo Exit Press 0\n")
+	/*Read input from the user*/
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	input := scanner.Text()
+
+	if input == "Y" || input == "y" {
+		return true
+	} else if input == "0" { /*exists if 0 pressed*/
+		os.Exit(0)
+	}
+	return false
 }
