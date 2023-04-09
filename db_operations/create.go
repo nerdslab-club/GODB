@@ -33,6 +33,8 @@ type TablePk struct {
 	PrimaryKey string
 }
 
+var root string = "database"
+
 type (
 	Logger interface {
 		Fatal(string, ...interface{})
@@ -196,8 +198,8 @@ func Create() string {
 				fmt.Println(err)
 			}
 			fmt.Println("Write table name where you want to insert data or to see table list type 'table list'")
-		} else if WordCount(input) == 1 { //table name entered by user
-			//checks if the table exists
+		} else if WordCount(input) == 1 { //Table name entered by user
+			//Checks if the table exists
 			// Use filepath.Walk to traverse the directory tree
 			err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 				// Check if the current path is a directory with the desired name
@@ -225,9 +227,9 @@ func Create() string {
 		fmt.Println("Error", err)
 	}
 
-	/*for random json structures*/
+	/*For random json structures*/
 	var data map[string]interface{}
-
+	//{"Name": "Prat","age": 30,"isEmployed": true,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
 	var pkValue string
 	validInput := false
 	for validInput == false {
@@ -247,7 +249,7 @@ func Create() string {
 		/*Get chosen table's primary key*/
 		tablePk := GetPrimaryKey(tableName)
 
-		pkValue = checkPKValue(data, tablePk)
+		pkValue = CheckPKValue(data, tablePk)
 
 		/*Checks if file exists with same name*/
 		filename := filepath.Join(dir, tableName, pkValue+".json")
@@ -277,7 +279,6 @@ func Create() string {
 
 // CreateTablePk Creates table directory and updates table_pk file
 func CreateTablePk(table string, pk string) string {
-	root := "database/"
 
 	/*Create new directory at root*/
 	db, err := New(root, nil)
@@ -321,6 +322,7 @@ func WordCount(s string) int {
 	return len(strings.Fields(s))
 }
 
+// GetPrimaryKey get tables primary key
 func GetPrimaryKey(tableName string) string {
 	var pk string
 	fmt.Print(pk)
@@ -336,7 +338,7 @@ func GetPrimaryKey(tableName string) string {
 		log.Fatal(err)
 	}
 
-	// Loop through each object in the array and check if the key "name" exists
+	// Loop through each object in the array and check if the key "Name" exists
 	for _, objmap := range objmaps {
 		if name, ok := objmap["Name"]; ok {
 			if name == tableName {
@@ -348,7 +350,8 @@ func GetPrimaryKey(tableName string) string {
 	return pk
 }
 
-func checkPKValue(data map[string]interface{}, tablePk string) string {
+// CheckPKValue if primary key exists then pk value is returned
+func CheckPKValue(data map[string]interface{}, tablePk string) string {
 	// Check if the key "tablePk" exists in the map
 	if _, ok := data[tablePk]; ok {
 		return data[tablePk].(string)

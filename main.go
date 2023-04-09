@@ -2,10 +2,8 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"goDB/db_operations"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -32,56 +30,6 @@ type (
 		log     Logger
 	}
 )
-
-func (d *Driver) Read(collection, resource string, v interface{}) error {
-
-	if collection == "" {
-		return fmt.Errorf("Missing collection - unable to read!")
-	}
-
-	if resource == "" {
-		return fmt.Errorf("Missing resource - unable to read record (no name)!")
-	}
-
-	record := filepath.Join(d.dir, collection, resource)
-
-	if _, err := stat(record); err != nil {
-		return err
-	}
-
-	b, err := ioutil.ReadFile(record + ".json")
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(b, &v)
-}
-
-func (d *Driver) ReadAll(collection string) ([]string, error) {
-
-	if collection == "" {
-		return nil, fmt.Errorf("Missing collection - unable to read")
-	}
-	dir := filepath.Join(d.dir, collection)
-
-	if _, err := stat(dir); err != nil {
-		return nil, err
-	}
-
-	files, _ := ioutil.ReadDir(dir)
-
-	var records []string
-
-	for _, file := range files {
-		b, err := ioutil.ReadFile(filepath.Join(dir, file.Name()))
-		if err != nil {
-			return nil, err
-		}
-
-		records = append(records, string(b))
-	}
-	return records, nil
-}
 
 func (d *Driver) Delete(collection, resource string) error {
 
@@ -126,21 +74,6 @@ func stat(path string) (fi os.FileInfo, err error) {
 	return
 }
 
-type Address struct {
-	City    string
-	State   string
-	Country string
-	Pincode json.Number
-}
-
-type User struct {
-	Name    string
-	Age     json.Number
-	Contact string
-	Company string
-	Address Address
-}
-
 func main() {
 	//dir := "database/"
 
@@ -153,26 +86,52 @@ func main() {
 		/*Takes input from user*/
 		input = GetInputNumber()
 
-		/*Create*/
-		if input == 1 {
+		if input == 1 { /*Create*/
+
 			fmt.Print("1. Create Table (Press 1)\n2. Insert Row in Existing Table (Press 2)\nChoose Operation...\n")
 			/*Takes input from user*/
 			secondInput := GetInputNumber()
 			if secondInput == 1 {
 				fmt.Print("Write 'CREATE TABLE <TABLE_NAME> <PRIMARY_KEY>'\nFor example, to create a table called 'users' write 'CREATE TABLE USERS NAME'\n")
-				thirdInput := GetInputString()
+				thirdInput := GetInputString("create")
 
 				fmt.Print(db_operations.CreateTablePk(strings.Fields(thirdInput)[2], strings.Fields(thirdInput)[3]))
 			} else if secondInput == 2 {
 				fmt.Print(db_operations.Create())
+			} else {
+				fmt.Print("Invalid input. Please, give valid input!\n")
 			}
 
-		} else if input == 2 {
+		} else if input == 2 { /*Read*/
+
+			fmt.Print("1. Read all from a table (Press 1)\n2. Read specific row data from a table (Press 2)\nTo Exit Press 0\nChoose Any Operations To Continue...\n")
+			/*Takes input from user*/
+			secondInput := GetInputNumber()
+
+			if secondInput == 1 {
+				fmt.Print("Write 'READ * <TABLE_NAME>'\nFor example, to read from 'test' table write 'READ * TEST'\n")
+				thirdInput := GetInputString("read")
+
+				if strings.Fields(thirdInput)[1] == "*" {
+					fmt.Print(db_operations.ReadAll(strings.Fields(thirdInput)[2]))
+				} else {
+					fmt.Print("Invalid input. Please, give valid input!\n")
+				}
+
+			} else if secondInput == 2 {
+				fmt.Print("Write 'READ <PRIMARY_KEY> <TABLE_NAME>'\nFor example, to read from 'test' table and primary key of a row is 'MIDTERM' write 'READ MIDTERM TEST'\n")
+				thirdInput := GetInputString("read")
+
+				fmt.Print(db_operations.Read(strings.Fields(thirdInput)[1], strings.Fields(thirdInput)[2]))
+			} else {
+				fmt.Print("Invalid input. Please, give valid input!\n")
+			}
+		} else if input == 3 { /*Update*/
 			fmt.Print(input)
-		} else if input == 3 {
+		} else if input == 4 { /*Delete*/
 			fmt.Print(input)
-		} else if input == 4 {
-			fmt.Print(input)
+		} else {
+			fmt.Print("Invalid input. Please, give valid input!\n")
 		}
 		fmt.Print("\n")
 	}
@@ -236,7 +195,7 @@ func GetInputNumber() int {
 }
 
 // GetInputString Takes string input from user
-func GetInputString() string {
+func GetInputString(operation string) string {
 	validInput := false
 	var line string
 	for validInput == false {
@@ -246,14 +205,26 @@ func GetInputString() string {
 		line = scanner.Text()
 
 		/*Command validations*/
-		if strings.HasPrefix(line, "create table") || strings.HasPrefix(line, "CREATE TABLE") {
-			if WordCount(line) != 4 {
-				fmt.Println("Invalid command. Please enter valid command!")
+		if operation == "create" {
+			if strings.HasPrefix(line, "create table") || strings.HasPrefix(line, "CREATE TABLE") {
+				if WordCount(line) != 4 {
+					fmt.Println("Invalid command. Please enter valid command!")
+				} else {
+					validInput = true
+				}
 			} else {
-				validInput = true
+				fmt.Println("Invalid command. Please enter valid command!")
 			}
-		} else {
-			fmt.Println("Invalid command. Please enter valid command!")
+		} else if operation == "read" {
+			if strings.HasPrefix(line, "read") || strings.HasPrefix(line, "READ") {
+				if WordCount(line) != 3 {
+					fmt.Println("Invalid command. Please enter valid command!")
+				} else {
+					validInput = true
+				}
+			} else {
+				fmt.Println("Invalid command. Please enter valid command!")
+			}
 		}
 	}
 
