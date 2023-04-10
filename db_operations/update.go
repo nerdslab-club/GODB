@@ -102,39 +102,47 @@ func UpdateRow(pk, tableName string) string {
 		return ""
 	}
 
-	fmt.Println("Please enter valid json file containing table's primary key to insert new row.")
-	/*Taking input from user*/
-	input := GetInput()
+	/*Gets chosen table's primary key*/
+	tablePk := GetPrimaryKey(tableName)
 
-	/*Create new directory at root*/
+	/*For random json structures*/
+	var data map[string]interface{}
+	var pkValue string
+
+	validInput := false
+	for validInput == false {
+		fmt.Println("Please enter valid json file containing table's primary key to insert new row.")
+
+		/*Taking input from user*/
+		input := GetInput()
+
+		/*previous data is emptied*/
+		data = make(map[string]interface{})
+
+		/*Decode a JSON string to GO value*/
+		err := json.Unmarshal([]byte(input), &data)
+
+		/*Checks if primary key exists in given json*/
+		pkValue = CheckPKValue(data, tablePk)
+
+		if err != nil {
+			fmt.Println("Error: Invalid json body provided for the request!")
+		} else if pkValue == "" {
+			fmt.Println("Error: Primary key does not exist!")
+		} else {
+			validInput = true
+		}
+	}
+
+	/*Creates db object*/
 	db, err := New(root, nil)
 	if err != nil {
 		fmt.Println("Error", err)
 	}
 
-	/*For random json structures*/
-	var data map[string]interface{}
-
-	/*Decode a JSON string to GO value*/
-	err = json.Unmarshal([]byte(input), &data)
-	if err != nil {
-		//return errors.New("invalid json body provided for the request")
-		fmt.Println("Error: Invalid json body provided for the request!")
-		return "Failed!"
-	}
-
-	/*Get chosen table's primary key*/
-	tablePk := GetPrimaryKey(tableName)
-
-	pkValue := CheckPKValue(data, tablePk)
-
 	/*Delete user by name*/
 	if err := db.Delete(tableName, pk); err != nil {
 		fmt.Println("Error", err)
-	}
-
-	if pkValue == "" || data == nil {
-		return "Error occurred!"
 	}
 
 	db.Write(tableName, pkValue, data)

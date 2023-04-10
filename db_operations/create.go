@@ -238,6 +238,9 @@ func Create() string {
 		input := GetInput()
 		//{"Name": "John", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
 
+		/*previous data is emptied*/
+		data = make(map[string]interface{})
+
 		/*Decode a JSON string to GO value*/
 		err = json.Unmarshal([]byte(input), &data)
 		if err != nil {
@@ -249,6 +252,7 @@ func Create() string {
 		/*Get chosen table's primary key*/
 		tablePk := GetPrimaryKey(tableName)
 
+		/*Checks if primary key exists in given json*/
 		pkValue = CheckPKValue(data, tablePk)
 
 		/*Checks if file exists with same name*/
@@ -346,7 +350,7 @@ func GetPrimaryKey(tableName string) string {
 	return pk
 }
 
-// CheckPKValue if primary key exists then pk value is returned
+// CheckPKValue if primary key exists in given json then pk value is returned
 func CheckPKValue(data map[string]interface{}, tablePk string) string {
 	// Check if the key "tablePk" exists in the map
 	if _, ok := data[tablePk]; ok {
