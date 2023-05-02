@@ -9,15 +9,20 @@ import (
 	"strings"
 )
 
-const Version = "1.0.0"
-
 func main() {
 
 	var input int = 1
 
 	for input != 0 {
 		/*Choose operation*/
-		fmt.Print("1. Create (Press 1)\n2. Read (Press 2)\n3. Update (Press 3)\n4. Delete (Press 4)\nTo Exit Press 0\nChoose Any Operation To Continue...\n")
+		fmt.Print(
+			"1. Create (Press 1)\n" +
+				"2. Read (Press 2)\n" +
+				"3. Update (Press 3)\n" +
+				"4. Delete (Press 4)\n" +
+				"5. Query (Press 5)\n" +
+				"To Exit Press 0\n" +
+				"Choose Any Operation To Continue...\n")
 
 		/*Takes input from user*/
 		input = GetInputNumber()
@@ -168,6 +173,55 @@ func main() {
 			} else {
 				fmt.Print("Invalid input. Please, give valid input!\n")
 			}
+		} else if input == 5 {
+			fmt.Print(
+				"1. Create new index (Press 1)\n" +
+					"2. Execute query (Press 2)\n")
+
+			secondInput := GetInputNumber()
+			if secondInput == 1 {
+				var thirdInput string
+				/*validates input from user*/
+				validInput := false
+				for validInput == false {
+					fmt.Print("Write 'INDEX <TABLE_NAME> <COLUMN NAME>'\nFor example, to create index for column 'MIDTERM' of table 'EXAM', write 'INDEX EXAM MIDTERM'\n")
+					thirdInput = GetInputString("index")
+
+					if WordCount(thirdInput) == 3 {
+						validInput = true
+					} else {
+						fmt.Print("Invalid input. Please, give valid input!\n")
+					}
+				}
+
+				/*Index one column*/
+				fmt.Print(db_operations.CreateIndex(strings.Fields(thirdInput)[1], strings.Fields(thirdInput)[2]))
+
+			} else if secondInput == 2 {
+				var thirdInput string
+				/*validates input from user*/
+				validInput := false
+				for validInput == false {
+					fmt.Print("Write 'QUERY <TABLE_NAME> <COLUMN_NAME> <CONDITION> <VALUE>'\n" +
+						"For example, to query a value 'MARK' from 'STUDENT' table, write 'QUERY STUDENT MARK G 95'\n" +
+						"Where, equal=E, greater=G, lesser=L, greater_and_equal=GE, lesser_and_equal=LE")
+					thirdInput = GetInputString("query")
+
+					if !db_operations.StringInCondition(strings.Fields(thirdInput)[3]) {
+						fmt.Print("Invalid condition. Need to be one of (\"G\", \"L\", \"E\", \"GE\", \"LE\")!\n")
+					} else if WordCount(thirdInput) == 4 {
+						validInput = true
+					} else {
+						fmt.Print("Invalid input. Please, give valid input!\n")
+					}
+				}
+
+				/*Delete one row*/
+				fmt.Print(db_operations.QueryIndex(strings.Fields(thirdInput)[1], strings.Fields(thirdInput)[2], strings.Fields(thirdInput)[3], strings.Fields(thirdInput)[4]))
+			} else {
+				fmt.Print("Invalid input. Please, give valid input!\n")
+			}
+
 		} else {
 			fmt.Print("Invalid input. Please, give valid input!\n")
 		}
@@ -251,6 +305,26 @@ func GetInputString(operation string) string {
 		} else if operation == "delete" {
 			if strings.HasPrefix(line, "delete ") || strings.HasPrefix(line, "DELETE ") {
 				if WordCount(line) >= 2 {
+					validInput = true
+				} else {
+					fmt.Println("Invalid command. Please enter valid command!")
+				}
+			} else {
+				fmt.Println("Invalid command. Please enter valid command!")
+			}
+		} else if operation == "index" {
+			if strings.HasPrefix(line, "index ") || strings.HasPrefix(line, "INDEX ") {
+				if WordCount(line) >= 2 {
+					validInput = true
+				} else {
+					fmt.Println("Invalid command. Please enter valid command!")
+				}
+			} else {
+				fmt.Println("Invalid command. Please enter valid command!")
+			}
+		} else if operation == "query" {
+			if strings.HasPrefix(line, "query ") || strings.HasPrefix(line, "QUERY ") {
+				if WordCount(line) >= 4 {
 					validInput = true
 				} else {
 					fmt.Println("Invalid command. Please enter valid command!")
