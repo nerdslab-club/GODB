@@ -22,7 +22,7 @@ Saved files:
     {"John", "23", "23344333", "Myrl Tech", Address{"bangalore", "karnataka", "india", "410013"}}
 
 //test json data
-{"Name": "Joaa", "Nesha" : "Sleeping", "Age": 32, "Contact": "23344333", "Company": "Dominate", "Address": {"City": "bangalore", "State": "karnataka", "Country": "india", "Pincode": 410013}}
+{"Name": "Prottay", "student_id" : "1", "Age": 32, "Contact": "23344333", "Company": "Dominate"}
 {"id": "test_10","age": 30,"isEmployed": true,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
 
 ///Example crating student table

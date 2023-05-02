@@ -65,23 +65,23 @@ func stat(path string) (fi os.FileInfo, err error) {
 	return
 }
 
-func ReadAll(tableName string) string {
+func ReadAll(tableName string) (string, string) {
 
 	/*If directory does not exist it returns*/
 	if !CheckDirectory(tableName) {
-		return ""
+		return "", ""
 	}
 
 	db, err := New(root, nil)
 	if err != nil {
 		fmt.Println("Error ", err)
-		return ""
+		return "", ""
 	}
 	/*Read all users*/
 	records, err := db.ReadAll(tableName)
 	if err != nil {
 		fmt.Println("Error", err)
-		return ""
+		return "", ""
 	}
 	//fmt.Println(records)
 
@@ -101,13 +101,13 @@ func ReadAll(tableName string) string {
 	jsonBytes, err := json.MarshalIndent(allData, "", "\t")
 	if err != nil {
 		fmt.Println("Error", err)
-		return ""
+		return "", ""
 	}
 
 	jsonStr := string(jsonBytes)
 	fmt.Print(jsonStr)
 
-	return "\nSuccessfully read from directory!"
+	return "\nSuccessfully read from directory!", jsonStr
 }
 
 func Read(pk string, tableName string) string {

@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"goDB/db_operations"
 	"goDB/graph/model"
 )
 
@@ -26,9 +27,20 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	return todos, nil
 }
 
+// CreateTable is the resolver for the createTable field.
+func (r *mutationResolver) CreateTable(ctx context.Context, input model.TableData) (string, error) {
+	return db_operations.CreateTablePk(input.TableName, input.PrimaryKey), nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	return r.TodoList, nil
+}
+
+// ReadTable is the resolver for the readTable field.
+func (r *queryResolver) ReadTable(ctx context.Context, input model.ReadAllTableData) (string, error) {
+	_, jsonStr := db_operations.ReadAll(input.TableName)
+	return jsonStr, nil
 }
 
 // Mutation returns MutationResolver implementation.

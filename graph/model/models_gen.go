@@ -7,6 +7,16 @@ type NewTodo struct {
 	UserID string `json:"userId"`
 }
 
+type ReadAllTableData struct {
+	TableName string `json:"tableName"`
+}
+
+type TableData struct {
+	Instruction string `json:"instruction"`
+	TableName   string `json:"tableName"`
+	PrimaryKey  string `json:"primaryKey"`
+}
+
 type Todo struct {
 	ID   string `json:"id"`
 	Text string `json:"text"`
