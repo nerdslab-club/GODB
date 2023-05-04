@@ -11,6 +11,7 @@ import (
 type TableIndex struct {
 	Table string
 	Index []string
+	PK    string
 }
 
 func (d *Driver) WriteIndex(collection, resource string, tableExists bool, v interface{}) error {
@@ -145,3 +146,8 @@ func CreateIndex(tableName, columnName string) string {
 
 	return "Successfully Index Created!"
 }
+
+//func createBtree(tableName, columnName string) *b_tree.BTree {
+//	tree := b_tree.NewBTree()
+//	tree.Insert()
+//}
