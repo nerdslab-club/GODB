@@ -17,6 +17,10 @@ type TableData struct {
 	PrimaryKey  string `json:"primaryKey"`
 }
 
+type TableRowData struct {
+	JSONData string `json:"jsonDATA"`
+}
+
 type Todo struct {
 	ID   string `json:"id"`
 	Text string `json:"text"`
@@ -27,4 +31,13 @@ type Todo struct {
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+type DeleteTableData struct {
+	TableName string `json:"tableName"`
+}
+
+type UpdateTableName struct {
+	OldTableName string `json:"oldTableName"`
+	NewTableName string `json:"newTableName"`
 }

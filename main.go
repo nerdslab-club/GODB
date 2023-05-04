@@ -149,7 +149,7 @@ func main() {
 					}
 				}
 
-				/*Delete one row*/
+				/*Delete one table*/
 				fmt.Print(db_operations.DeleteTable(strings.Fields(thirdInput)[1]))
 			} else if secondInput == 3 {
 				var thirdInput string
