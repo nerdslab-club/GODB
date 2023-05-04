@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"goDB/b_tree"
 	"goDB/db_operations"
 	"os"
 	"strconv"
@@ -11,8 +12,9 @@ import (
 
 func main() {
 
-	var input int = 1
+	b_tree.InitIndexManager()
 
+	var input int = 1
 	for input != 0 {
 		/*Choose operation*/
 		fmt.Print(
@@ -358,4 +360,13 @@ func IsSure() bool {
 		os.Exit(0)
 	}
 	return false
+}
+
+func test() {
+	println(b_tree.ConvertStringToInt("abc"))
+	println(b_tree.ConvertStringToInt("ABC"))
+	println(b_tree.ConvertStringToInt("1"))
+	println(b_tree.ConvertStringToInt("2"))
+	println(b_tree.ConvertStringToInt("201"))
+	println(b_tree.ConvertStringToInt("zxc"))
 }
