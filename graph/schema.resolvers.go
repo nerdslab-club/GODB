@@ -32,6 +32,21 @@ func (r *mutationResolver) CreateTable(ctx context.Context, input model.TableDat
 	return db_operations.CreateTablePk(input.TableName, input.PrimaryKey), nil
 }
 
+// CreateTableRow is the resolver for the createTableRow field.
+func (r *mutationResolver) CreateTableRow(ctx context.Context, input model.TableRowData) (string, error) {
+	return db_operations.Create(), nil
+}
+
+// UpdateTable is the resolver for the updateTable field.
+func (r *mutationResolver) UpdateTable(ctx context.Context, input model.UpdateTableName) (string, error) {
+	return db_operations.UpdateTableName(input.OldTableName, input.NewTableName), nil
+}
+
+// DeleteTable is the resolver for the deleteTable field.
+func (r *mutationResolver) DeleteTable(ctx context.Context, input model.DeleteTableData) (string, error) {
+	return db_operations.DeleteTable(input.TableName), nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	return r.TodoList, nil

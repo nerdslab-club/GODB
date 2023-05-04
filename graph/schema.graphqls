@@ -27,7 +27,21 @@ input TableData {
   primaryKey: String!
 }
 
+input TableRowData {
+  jsonDATA: String!
+
+}
+
 input ReadAllTableData {
+  tableName: String!
+}
+
+input updateTableName {
+  oldTableName: String!
+  newTableName: String!
+}
+
+input deleteTableData{
   tableName: String!
 }
 
@@ -39,6 +53,9 @@ type Query {
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   createTable(input: TableData!): String!
+  createTableRow(input: JSON.parse(TableRowData)!): String!
+  updateTable(input: updateTableName!): String!
+  deleteTable(input: deleteTableData!): String!
 }
 
 #mutation {
