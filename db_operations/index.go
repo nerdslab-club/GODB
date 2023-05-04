@@ -94,14 +94,24 @@ func CreateIndex(tableName, columnName string) string {
 		return "Failed!"
 	}
 
-	// Read the contents of "table_index.json" into a slice of TableIndex objects
-	var tableIndexes []TableIndex
-	err = db.Read("/", "table_index", &tableIndexes)
-	if err != nil {
-		fmt.Println("Error reading table index:", err)
+	filePath := filepath.Join(root, "table_index.json")
+
+	fileExists := true
+
+	// check if table_index exists
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		fileExists = false
 	}
 
-	//var indexes []string
+	var tableIndexes []TableIndex
+	if fileExists {
+		// Read the contents of "table_index" into a slice of TableIndex objects
+		err = db.Read("/", "table_index", &tableIndexes)
+		if err != nil {
+			fmt.Println("Error reading table index:", err)
+		}
+	}
+
 	// Iterates over the table_index data to see if the desired table exists
 	tableExists := false
 	for i, tIndex := range tableIndexes {
@@ -127,10 +137,10 @@ func CreateIndex(tableName, columnName string) string {
 
 	// Print the result
 	if tableExists {
-		/*creates table_index.json and updates*/
+		/*creates table_index and updates*/
 		err = db.WriteIndex("/", "table_index", tableExists, tableIndexes)
 	} else {
-		/*creates table_index.json and updates*/
+		/*creates table_index and updates*/
 		err = db.WriteIndex("/", "table_index", tableExists, []TableIndex{
 			{
 				Table: tableName,
