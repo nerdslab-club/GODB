@@ -206,12 +206,12 @@ func main() {
 				for validInput == false {
 					fmt.Print("Write 'QUERY <TABLE_NAME> <COLUMN_NAME> <CONDITION> <VALUE>'\n" +
 						"For example, to query a value 'MARK' from 'STUDENT' table, write 'QUERY STUDENT MARK G 95'\n" +
-						"Where, equal='==', greater='>', lesser='<', greater_and_equal='>=', lesser_and_equal='<='")
+						"Where, equal='==', greater='>', lesser='<', greater_and_equal='>=', lesser_and_equal='<='\n")
 					thirdInput = GetInputString("query")
 
 					if !db_operations.StringInCondition(strings.Fields(thirdInput)[3]) {
 						fmt.Print("Invalid condition. Need to be one of (\">\", \"<\", \"==\", \">=\", \"<=\")!\n")
-					} else if WordCount(thirdInput) == 4 {
+					} else if WordCount(thirdInput) == 5 {
 						validInput = true
 					} else {
 						fmt.Print("Invalid input. Please, give valid input!\n")
