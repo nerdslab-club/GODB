@@ -11,20 +11,21 @@ func QueryIndex(tableName, columnName, condition, value string) []string {
 	currentBTree := b_tree.GetIndex(treeName)
 	if currentBTree == nil {
 		fmt.Println("No tree found!")
+		return nil
 	}
 
-	fileNames, err := currentBTree.Search(b_tree.Key(b_tree.ConvertStringToInt(value)), condition)
+	fileNames, err := currentBTree.Search(b_tree.ToString(value), condition)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return nil
 	}
 
-	var searchReasults []string
+	var searchResults []string
 	for _, file := range fileNames {
-		searchReasults = append(searchReasults, readFile(file, tableName))
+		searchResults = append(searchResults, readFile(file, tableName))
 	}
 
-	return searchReasults
+	return searchResults
 }
 
 func readFile(pk string, tableName string) string {

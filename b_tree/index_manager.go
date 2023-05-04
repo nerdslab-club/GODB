@@ -27,7 +27,7 @@ func ConvertStringToInt(val interface{}) int {
 	var res int
 	var num int
 
-	str := toString(val)
+	str := ToString(val)
 
 	for i := 0; i < len(str); i++ {
 		c := str[i]
@@ -40,7 +40,7 @@ func ConvertStringToInt(val interface{}) int {
 	return res*1000000 + num
 }
 
-func toString(val interface{}) string {
+func ToString(val interface{}) string {
 	switch v := val.(type) {
 	case bool:
 		return strconv.FormatBool(v)
@@ -74,10 +74,3 @@ func toString(val interface{}) string {
 		return ""
 	}
 }
-
-
-
-
-
-
-

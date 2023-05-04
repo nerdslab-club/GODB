@@ -2,7 +2,10 @@ module goDB
 
 go 1.20
 
-require github.com/99designs/gqlgen v0.17.30
+require (
+	github.com/99designs/gqlgen v0.17.30
+	github.com/google/btree v1.1.2
+)
 
 require (
 	github.com/gorilla/websocket v1.5.0 // indirect

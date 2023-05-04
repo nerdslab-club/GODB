@@ -151,7 +151,7 @@ func CreateIndex(tableName, columnName string) string {
 }
 
 func createBtree(tableName, columnName string) *b_tree.BTree {
-	tree := b_tree.NewBTree()
+	tree := b_tree.NewBTree(2)
 	pk := GetPrimaryKey(tableName)
 
 	allRows := readALlRows(tableName)
@@ -160,7 +160,7 @@ func createBtree(tableName, columnName string) *b_tree.BTree {
 		pkValue := row[pk]
 		keyValue := row[columnName]
 		//println(keyValue.(string), " : ", pkValue.(string))
-		tree.Insert(b_tree.Key(b_tree.ConvertStringToInt(keyValue)), pkValue.(string))
+		tree.Insert(b_tree.ToString(keyValue), b_tree.ToString(pkValue))
 	}
 	b_tree.UpdateIndex(b_tree.CreateBtreeName(tableName, columnName), tree)
 	return tree
