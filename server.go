@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"goDB/b_tree"
 	"goDB/graph"
 	"log"
 	"net/http"
@@ -16,7 +17,7 @@ func main() {
 	if port == "" {
 		port = os.Args[1]
 	}
-
+	b_tree.InitIndexManager()
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

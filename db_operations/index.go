@@ -3,6 +3,7 @@ package db_operations
 import (
 	"encoding/json"
 	"fmt"
+	"goDB/b_tree"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -143,5 +144,58 @@ func CreateIndex(tableName, columnName string) string {
 		return "Failed!"
 	}
 
+	// creating Btree
+	createBtree(tableName, columnName)
+
 	return "Successfully Index Created!"
+}
+
+func createBtree(tableName, columnName string) *b_tree.BTree {
+	tree := b_tree.NewBTree()
+	pk := GetPrimaryKey(tableName)
+
+	allRows := readALlRows(tableName)
+
+	for _, row := range allRows {
+		pkValue := row[pk]
+		keyValue := row[columnName]
+		//println(keyValue.(string), " : ", pkValue.(string))
+		tree.Insert(b_tree.Key(b_tree.ConvertStringToInt(keyValue)), pkValue.(string))
+	}
+	b_tree.UpdateIndex(b_tree.CreateBtreeName(tableName, columnName), tree)
+	return tree
+}
+
+func readALlRows(tableName string) []map[string]interface{} {
+	/*If directory does not exist it returns*/
+	if !CheckDirectory(tableName) {
+		return nil
+	}
+
+	db, err := New(root, nil)
+	if err != nil {
+		fmt.Println("Error ", err)
+		return nil
+	}
+	/*Read all users*/
+	records, err := db.ReadAll(tableName)
+	if err != nil {
+		fmt.Println("Error", err)
+		return nil
+	}
+	//fmt.Println(records)
+
+	/*For any type of JSON structures*/
+	var allData []map[string]interface{}
+
+	for _, f := range records {
+		var data map[string]interface{}
+
+		/*Decodes JSON*/
+		if err := json.Unmarshal([]byte(f), &data); err != nil {
+			fmt.Println("Error", err)
+		}
+		allData = append(allData, data)
+	}
+	return allData
 }

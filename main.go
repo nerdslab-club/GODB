@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"goDB/b_tree"
 	"goDB/db_operations"
 	"os"
 	"strconv"
@@ -11,8 +12,9 @@ import (
 
 func main() {
 
-	var input int = 1
+	b_tree.InitIndexManager()
 
+	var input int = 1
 	for input != 0 {
 		/*Choose operation*/
 		fmt.Print(
@@ -204,12 +206,12 @@ func main() {
 				for validInput == false {
 					fmt.Print("Write 'QUERY <TABLE_NAME> <COLUMN_NAME> <CONDITION> <VALUE>'\n" +
 						"For example, to query a value 'MARK' from 'STUDENT' table, write 'QUERY STUDENT MARK G 95'\n" +
-						"Where, equal=E, greater=G, lesser=L, greater_and_equal=GE, lesser_and_equal=LE")
+						"Where, equal='==', greater='>', lesser='<', greater_and_equal='>=', lesser_and_equal='<='\n")
 					thirdInput = GetInputString("query")
 
 					if !db_operations.StringInCondition(strings.Fields(thirdInput)[3]) {
-						fmt.Print("Invalid condition. Need to be one of (\"G\", \"L\", \"E\", \"GE\", \"LE\")!\n")
-					} else if WordCount(thirdInput) == 4 {
+						fmt.Print("Invalid condition. Need to be one of (\">\", \"<\", \"==\", \">=\", \"<=\")!\n")
+					} else if WordCount(thirdInput) == 5 {
 						validInput = true
 					} else {
 						fmt.Print("Invalid input. Please, give valid input!\n")
@@ -358,4 +360,13 @@ func IsSure() bool {
 		os.Exit(0)
 	}
 	return false
+}
+
+func test() {
+	println(b_tree.ConvertStringToInt("abc"))
+	println(b_tree.ConvertStringToInt("ABC"))
+	println(b_tree.ConvertStringToInt("1"))
+	println(b_tree.ConvertStringToInt("2"))
+	println(b_tree.ConvertStringToInt("201"))
+	println(b_tree.ConvertStringToInt("zxc"))
 }
