@@ -104,14 +104,14 @@ func (d *Driver) Write(collection, resource string, v interface{}) error {
 	if !os.IsNotExist(err) {
 		file, err := ioutil.ReadFile("database/table_pk.json")
 		if err != nil {
-			fmt.Println("Error 223:", err)
+			fmt.Println("Error: ", err)
 			return err
 		}
 
 		var tableArr []TablePk
 		err = json.Unmarshal(file, &tableArr)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("Error: ", err)
 			return err
 		}
 

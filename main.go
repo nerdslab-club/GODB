@@ -184,7 +184,7 @@ func main() {
 				/*validates input from user*/
 				validInput := false
 				for validInput == false {
-					fmt.Print("Write 'INDEX <TABLE_NAME> <COLUMN NAME>'\nFor example, to create index for column 'MIDTERM' of table 'EXAM', write 'INDEX EXAM MIDTERM'\n")
+					fmt.Print("Write 'INDEX <TABLE_NAME> <COLUMN_NAME>'\nFor example, to create index for column 'MIDTERM' of table 'EXAM', write 'INDEX EXAM MIDTERM'\n")
 					thirdInput = GetInputString("index")
 
 					if WordCount(thirdInput) == 3 {
@@ -221,7 +221,6 @@ func main() {
 			} else {
 				fmt.Print("Invalid input. Please, give valid input!\n")
 			}
-
 		} else {
 			fmt.Print("Invalid input. Please, give valid input!\n")
 		}
@@ -244,6 +243,7 @@ func GetInputNumber() int {
 		number, err = strconv.Atoi(input)
 		if err != nil {
 			fmt.Println("Invalid input. Please enter a number!")
+			number = 99 //default set for invalid number nput
 		} else {
 			validInput = true
 		}
@@ -252,7 +252,9 @@ func GetInputNumber() int {
 		if number == 0 {
 			os.Exit(0)
 		}
+
 	}
+
 	return number
 }
 

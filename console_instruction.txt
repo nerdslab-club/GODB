@@ -23,7 +23,7 @@ Saved files:
 
 //test json data
 {"Name": "Prottay", "student_id" : "1", "Age": 32, "Contact": "23344333", "Company": "Dominate"}
-{"id": "test_10","age": 30,"isEmployed": true,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
+{"stu_id": "test_13","age": 30,"isEmployed": false,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
 
 ///Example crating student table
 
