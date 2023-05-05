@@ -61,7 +61,6 @@ input QueryData {
 type Query {
   todos: [Todo!]!
   readTable(input:ReadAllTableData!): String!
-
   executeQuery(input: QueryData!): String!
 }
 
@@ -71,27 +70,5 @@ type Mutation {
   updateTable(input: updateTableName!): String!
   deleteTable(input: deleteTableData!): String!
   createTableRow(input:TableRowData!) : String!
-
   createCustomIndex(input: CustomIndexData!): String!
-
 }
-
-#mutation {
-#  createTodo(input: {text: "Just implement the types", userId: "1"}) {
-#    id
-#    text
-#    done
-#  }
-#}
-
-#{
-#  todos {
-#    id
-#    done
-#    text
-#    user {
-#      name
-#      id
-#    }
-#  }
-#}

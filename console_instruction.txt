@@ -22,7 +22,26 @@ Saved files:
     {"John", "23", "23344333", "Myrl Tech", Address{"bangalore", "karnataka", "india", "410013"}}
 
 //test json data
-{"Name": "Toki", "student_id" : "4", "Age": 45, "Contact": "23344333", "Company": "Dominate"}
+{"Name": "Sumon", "student_id" : "5", "Age": 25, "Contact": "782463786", "Company": "Xume"}
+
+// marksheet
+{"course": "cse715", "joaa" : 10, "prattoy": 25, "faiza": 30, "toki": 40, "sumon": 50}
+{"course": "cse716", "joaa" : 80, "prattoy": 87, "faiza": 90, "toki": 91, "sumon": 99}
+{"course": "cse716", "joaa" : 100, "prattoy": 100, "faiza": 100, "toki": 100, "sumon": 100}
+
+{"course": "cse711", "joaa" : 60, "prattoy": 50, "faiza": 55, "toki": 45, "sumon": 87}
+
+# Subject
+{"course": "cse711", "title" : "SML-1", "credit": 1, "professor": "RA", "contact": "122334455"}
+{"course": "cse712", "title" : "SML-2", "credit": 2, "professor": "FS", "contact": "011383774"}
+{"course": "cse716", "title" : "ADS", "credit": 3, "professor": "ESF", "contact": "019837736"}
+
+"{\"course\":\"cse711\",\"title\":\"SML-1\",\"credit\":1,\"professor\":\"RA\",\"contact\":\"122334455\"}"
+
+"{\"course\":\"cse712\",\"title\":\"SML-2\",\"credit\":2,\"professor\":\"FS\",\"contact\":\"011383774\"}"
+
+"{\"course\":\"cse716\",\"title\":\"ADS\",\"credit\":3,\"professor\":\"ESF\",\"contact\":\"019837736\"}"
+
 {"stu_id": "test_13","age": 30,"isEmployed": false,"contact": {"email": "johndoe@example.com", "phone": "+1 555-555-5555"}, "hobbies": ["reading", "playing video games", "hiking"]}
 
 ///Example crating student table
@@ -32,5 +51,25 @@ CREATETABLE <foldername> <filename>
 #bug
 solved--1. after giving invalid json, valid json contains invalid json's data
 solved--2. if error encountered at any point of a transaction, everything should roll back [if error happens when updating, file gets deleted]
+
+#mutation {
+#  createTodo(input: {text: "Just implement the types", userId: "1"}) {
+#    id
+#    text
+#    done
+#  }
+#}
+
+#{
+#  todos {
+#    id
+#    done
+#    text
+#    user {
+#      name
+#      id
+#    }
+#  }
+#}
 
 
