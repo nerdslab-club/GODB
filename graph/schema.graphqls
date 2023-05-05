@@ -27,10 +27,6 @@ input TableData {
   primaryKey: String!
 }
 
-input TableRowData {
-  jsonDATA: String!
-
-}
 
 input ReadAllTableData {
   tableName: String!
@@ -45,17 +41,39 @@ input deleteTableData{
   tableName: String!
 }
 
+input TableRowData {
+  tableName: String!
+  jsonStr: String!
+}
+
+input CustomIndexData {
+  tableName: String!
+  columnName: String!
+}
+
+input QueryData {
+  tableName: String!
+  columnName: String!
+  condition: String!
+  value: String!
+}
+
 type Query {
   todos: [Todo!]!
   readTable(input:ReadAllTableData!): String!
+
+  executeQuery(input: QueryData!): String!
 }
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   createTable(input: TableData!): String!
-  createTableRow(input: JSON.parse(TableRowData)!): String!
   updateTable(input: updateTableName!): String!
   deleteTable(input: deleteTableData!): String!
+  createTableRow(input:TableRowData!) : String!
+
+  createCustomIndex(input: CustomIndexData!): String!
+
 }
 
 #mutation {

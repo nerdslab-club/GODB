@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"goDB/db_operations"
 	"goDB/graph/model"
+	"strings"
 )
 
 // CreateTodo is the resolver for the createTodo field.
@@ -32,11 +33,6 @@ func (r *mutationResolver) CreateTable(ctx context.Context, input model.TableDat
 	return db_operations.CreateTablePk(input.TableName, input.PrimaryKey), nil
 }
 
-// CreateTableRow is the resolver for the createTableRow field.
-func (r *mutationResolver) CreateTableRow(ctx context.Context, input model.TableRowData) (string, error) {
-	return db_operations.Create(), nil
-}
-
 // UpdateTable is the resolver for the updateTable field.
 func (r *mutationResolver) UpdateTable(ctx context.Context, input model.UpdateTableName) (string, error) {
 	return db_operations.UpdateTableName(input.OldTableName, input.NewTableName), nil
@@ -45,6 +41,17 @@ func (r *mutationResolver) UpdateTable(ctx context.Context, input model.UpdateTa
 // DeleteTable is the resolver for the deleteTable field.
 func (r *mutationResolver) DeleteTable(ctx context.Context, input model.DeleteTableData) (string, error) {
 	return db_operations.DeleteTable(input.TableName), nil
+}
+
+// CreateTableRow is the resolver for the createTableRow field.
+func (r *mutationResolver) CreateTableRow(ctx context.Context, input model.TableRowData) (string, error) {
+	return db_operations.CreateRowFromGQL(input.TableName, input.JSONStr), nil
+}
+
+// CreateCustomIndex is the resolver for the createCustomIndex field.
+func (r *mutationResolver) CreateCustomIndex(ctx context.Context, input model.CustomIndexData) (string, error) {
+	//panic(fmt.Errorf("not implemented: CreateCustomIndex - createCustomIndex"))
+	return db_operations.CreateIndex(input.TableName, input.ColumnName), nil
 }
 
 // Todos is the resolver for the todos field.
@@ -56,6 +63,11 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 func (r *queryResolver) ReadTable(ctx context.Context, input model.ReadAllTableData) (string, error) {
 	_, jsonStr := db_operations.ReadAll(input.TableName)
 	return jsonStr, nil
+}
+
+// ExecuteQuery is the resolver for the executeQuery field.
+func (r *queryResolver) ExecuteQuery(ctx context.Context, input model.QueryData) (string, error) {
+	return strings.Join(strings.Fields(fmt.Sprint(db_operations.QueryIndex(input.TableName, input.ColumnName, input.Condition, input.Value))), ", "), nil
 }
 
 // Mutation returns MutationResolver implementation.

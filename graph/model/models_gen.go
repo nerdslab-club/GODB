@@ -2,9 +2,21 @@
 
 package model
 
+type CustomIndexData struct {
+	TableName  string `json:"tableName"`
+	ColumnName string `json:"columnName"`
+}
+
 type NewTodo struct {
 	Text   string `json:"text"`
 	UserID string `json:"userId"`
+}
+
+type QueryData struct {
+	TableName  string `json:"tableName"`
+	ColumnName string `json:"columnName"`
+	Condition  string `json:"condition"`
+	Value      string `json:"value"`
 }
 
 type ReadAllTableData struct {
@@ -18,7 +30,8 @@ type TableData struct {
 }
 
 type TableRowData struct {
-	JSONData string `json:"jsonDATA"`
+	TableName string `json:"tableName"`
+	JSONStr   string `json:"jsonStr"`
 }
 
 type Todo struct {

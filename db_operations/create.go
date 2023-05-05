@@ -359,3 +359,73 @@ func CheckPKValue(data map[string]interface{}, tablePk string) string {
 
 	return ""
 }
+
+// CreateRowFromGQL create row from graphQL
+func CreateRowFromGQL(tableName, jsonStr string) string {
+	dir := "database/"
+	isTableName := false
+
+	//Checks if the table exists
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		// Check if the current path is a directory with the desired name
+		if info.IsDir() && info.Name() == tableName {
+			isTableName = true
+		}
+		return nil
+	})
+	if err != nil {
+		return err.Error()
+	}
+
+	if isTableName == false {
+		return "Table not found. Please, enter a valid table name!\n"
+	}
+
+	/*Create new directory at root*/
+	db, err := New(dir, nil)
+	if err != nil {
+		fmt.Println("Error", err)
+	}
+
+	/*For random json structures*/
+	var data map[string]interface{}
+
+	// check json validation
+	var pkValue string
+	validInput := false
+
+	data = make(map[string]interface{})
+
+	/*Decode a JSON string to GO value*/
+	err = json.Unmarshal([]byte(jsonStr), &data)
+	if err != nil {
+		return "Error: Invalid json body provided for the request!"
+	}
+
+	/*Get chosen table's primary key*/
+	tablePk := GetPrimaryKey(tableName)
+
+	/*Checks if primary key exists in given json*/
+	pkValue = CheckPKValue(data, tablePk)
+
+	/*Checks if file exists with same name*/
+	filename := filepath.Join(dir, tableName, pkValue+".json")
+
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		if pkValue == "" {
+			return "Primary key is absent in json file!"
+		} else {
+			validInput = true
+		}
+	} else {
+		return "Row with same primary key already exists. Please, give valid data!"
+	}
+
+	if !validInput {
+		return "Error occurred! Input not valid"
+	}
+
+	db.Write(tableName, pkValue, data)
+
+	return "Row successfully created for data: " + jsonStr
+}
