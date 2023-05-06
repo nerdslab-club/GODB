@@ -107,7 +107,7 @@ func ReadAll(tableName string) (string, string) {
 	jsonStr := string(jsonBytes)
 	fmt.Print(jsonStr)
 
-	return "\nSuccessfully read from directory!", jsonStr
+	return "\nSuccessfully read from directory!\n", jsonStr
 }
 
 func Read(pk string, tableName string) string {
