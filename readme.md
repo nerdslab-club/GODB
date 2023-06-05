@@ -9,6 +9,7 @@
 - Transaction
 - Deadlock Avoidance
 
+![Image](https://github.com/afmjoaa/GODB/assets/32086430/466826bd-713c-45b4-b5f5-1b7fd069eee7)
 
 
 
