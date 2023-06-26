@@ -8,8 +8,11 @@ require (
 )
 
 require (
+	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
+	github.com/linkedin/goavro v2.1.0+incompatible // indirect
+	github.com/linkedin/goavro/v2 v2.12.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 )
 

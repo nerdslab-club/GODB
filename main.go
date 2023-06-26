@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-
+	//test_avro()
 	b_tree.InitIndexManager()
 
 	var input int = 1
